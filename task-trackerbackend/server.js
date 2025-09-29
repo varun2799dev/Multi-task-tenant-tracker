@@ -6,6 +6,9 @@ const organizationRoutes = require("./routes/organizations");
 const projectRoutes = require("./routes/projects");
 const taskRoutes = require("./routes/tasks");
 const activityRoutes = require("./routes/activities");
+const db = require("./config/database");
+
+// Test database connection on startup
 
 dotenv.config();
 
@@ -21,6 +24,16 @@ app.use(
 );
 app.use(express.json());
 
+async function testDB() {
+  try {
+    const result = await db.query("SELECT NOW()");
+    console.log("✅ Database connected at:", result.rows[0].now);
+  } catch (error) {
+    console.error("❌ Database connection failed:", error.message);
+    process.exit(1); // Exit if DB fails
+  }
+}
+testDB();
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/organizations", organizationRoutes);
